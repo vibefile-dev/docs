@@ -1,0 +1,62 @@
+baseURL = 'https://docs.vibefile.dev/'
+languageCode = 'en-us'
+title = 'Vibefile Docs'
+theme = 'vibedocs'
+
+[markup]
+  [markup.highlight]
+    style = 'dracula'
+    noClasses = false
+    lineNos = false
+    guessSyntax = true
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[params]
+  description = "Documentation for Vibefile — the task runner for the AI era"
+  githubRepo = "https://github.com/vibefile-dev"
+  discordURL = "https://discord.gg/3TsMMvK8tV"
+  siteURL = "https://vibefile.dev"
+
+[menu]
+  [[menu.docs]]
+    name = "Overview"
+    url = "/"
+    weight = 1
+  [[menu.docs]]
+    name = "Getting Started"
+    url = "/getting-started/"
+    weight = 2
+  [[menu.docs]]
+    name = "Syntax"
+    url = "/syntax/"
+    weight = 3
+  [[menu.docs]]
+    name = "CLI Reference"
+    url = "/cli/"
+    weight = 4
+  [[menu.docs]]
+    name = "Project Detection"
+    url = "/project-detection/"
+    weight = 5
+  [[menu.docs]]
+    name = "Execution"
+    url = "/execution/"
+    weight = 6
+  [[menu.docs]]
+    name = "Compiled Targets"
+    url = "/compiled-targets/"
+    weight = 7
+  [[menu.docs]]
+    name = "Failure Handling"
+    url = "/failure-handling/"
+    weight = 8
+  [[menu.docs]]
+    name = "Configuration"
+    url = "/configuration/"
+    weight = 9
+  [[menu.docs]]
+    name = "Directives"
+    url = "/directives/"
+    weight = 10

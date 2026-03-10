@@ -1,0 +1,25 @@
+<aside class="docs-sidebar" id="sidebar">
+    <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Documentation</div>
+        {{ range .Site.Menus.docs }}
+        <a href="{{ .URL }}" class="sidebar-link{{ if eq $.RelPermalink .URL }} active{{ end }}">
+            <span class="sidebar-link-text">{{ .Name }}</span>
+        </a>
+        {{ end }}
+
+        <div class="sidebar-section-label" style="margin-top: 24px;">Links</div>
+        <a href="{{ $.Site.Params.siteURL }}" class="sidebar-link sidebar-link-external">
+            <span class="sidebar-link-text">vibefile.dev</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+        <a href="{{ $.Site.Params.githubRepo }}" class="sidebar-link sidebar-link-external">
+            <span class="sidebar-link-text">GitHub</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+        <a href="{{ $.Site.Params.discordURL }}" class="sidebar-link sidebar-link-external sidebar-discord">
+            <span class="sidebar-link-text">Discord</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+    </nav>
+</aside>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>

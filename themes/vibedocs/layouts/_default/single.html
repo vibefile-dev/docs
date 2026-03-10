@@ -1,0 +1,38 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+{{ with .Params.description }}<p class="page-description">{{ . }}</p>{{ end }}
+{{ .Content }}
+
+<div class="page-nav">
+    {{ $pages := .Site.Menus.docs }}
+    {{ $currentURL := .RelPermalink }}
+    {{ $prev := false }}
+    {{ $next := false }}
+    {{ $found := false }}
+    {{ range $i, $item := $pages }}
+        {{ if $found }}
+            {{ if not $next }}
+                {{ $next = $item }}
+            {{ end }}
+        {{ end }}
+        {{ if eq $currentURL $item.URL }}
+            {{ $found = true }}
+        {{ else if not $found }}
+            {{ $prev = $item }}
+        {{ end }}
+    {{ end }}
+
+    {{ with $prev }}
+    <a href="{{ .URL }}" class="page-nav-link page-nav-prev">
+        <span class="page-nav-label">Previous</span>
+        <span class="page-nav-title">← {{ .Name }}</span>
+    </a>
+    {{ end }}
+    {{ with $next }}
+    <a href="{{ .URL }}" class="page-nav-link page-nav-next">
+        <span class="page-nav-label">Next</span>
+        <span class="page-nav-title">{{ .Name }} →</span>
+    </a>
+    {{ end }}
+</div>
+{{ end }}

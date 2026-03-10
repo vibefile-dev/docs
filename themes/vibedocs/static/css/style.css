@@ -1,0 +1,643 @@
+/* ================================================================
+   vibedocs — documentation theme for vibefile.dev
+   Matches the landing page aesthetic: dark terminal, green accent,
+   JetBrains Mono, scanline texture — optimized for reading.
+   ================================================================ */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg:          #0b0c0e;
+    --bg2:         #0f1114;
+    --surface:     #13161b;
+    --surface2:    #1a1e26;
+    --border:      #1f2330;
+    --border2:     #2a2f3d;
+    --accent:      #b8ff57;
+    --accent2:     #57d4ff;
+    --accent-dim:  rgba(184, 255, 87, 0.10);
+    --accent-glow: rgba(184, 255, 87, 0.04);
+    --text:        #dde1ea;
+    --text2:       #9aa0b2;
+    --muted:       #555e72;
+    --faint:       #161920;
+
+    --sidebar-w:   260px;
+    --toc-w:       220px;
+    --header-h:    56px;
+    --content-max: 760px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-size: 15px;
+    line-height: 1.75;
+}
+
+/* ── SUBTLE GRID BACKGROUND ── */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(184, 255, 87, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(184, 255, 87, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── AMBIENT GLOW ── */
+.glow {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(184, 255, 87, 0.04) 0%, transparent 65%);
+    top: -150px;
+    left: -50px;
+    pointer-events: none;
+    z-index: 0;
+    animation: glow-drift 12s ease-in-out infinite alternate;
+}
+
+@keyframes glow-drift {
+    from { transform: translate(0, 0); }
+    to   { transform: translate(40px, 60px); }
+}
+
+
+/* ================================================================
+   HEADER
+   ================================================================ */
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: var(--header-h);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: rgba(11, 12, 14, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--text2);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+}
+
+.logo .name { color: var(--accent); font-weight: 700; }
+.logo .ext  { color: var(--muted); }
+
+.header-sep {
+    color: var(--border2);
+    margin: 0 10px;
+    font-size: 0.9rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.header-docs-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text2);
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.header-docs-link:hover { color: var(--accent); }
+
+.header-nav {
+    display: flex;
+    gap: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+}
+
+.header-nav a {
+    color: var(--muted);
+    text-decoration: none;
+    padding: 4px 14px;
+    border-left: 1px solid var(--border);
+    transition: color 0.15s, background 0.15s;
+}
+
+.header-nav a:last-child { border-right: 1px solid var(--border); }
+.header-nav a:hover { color: var(--accent); background: var(--accent-dim); }
+
+.header-nav a.discord { color: #7289da; display: flex; align-items: center; gap: 6px; }
+.header-nav a.discord:hover { color: #8fa4f3; background: rgba(114, 137, 218, 0.1); }
+
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px;
+    color: var(--text2);
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.mobile-menu-toggle:hover { color: var(--accent); border-color: var(--accent); }
+
+
+/* ================================================================
+   DOCS LAYOUT — sidebar | content | toc
+   ================================================================ */
+.docs-layout {
+    display: flex;
+    margin-top: var(--header-h);
+    min-height: calc(100vh - var(--header-h));
+    position: relative;
+    z-index: 10;
+}
+
+
+/* ── SIDEBAR ── */
+.docs-sidebar {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-w);
+    padding: 24px 16px 40px;
+    border-right: 1px solid var(--border);
+    background: var(--bg2);
+    overflow-y: auto;
+    z-index: 50;
+}
+
+.sidebar-section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 12px;
+    margin-bottom: 8px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 12px;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text2);
+    text-decoration: none;
+    transition: all 0.12s;
+    margin-bottom: 1px;
+}
+
+.sidebar-link:hover {
+    color: var(--text);
+    background: var(--surface2);
+}
+
+.sidebar-link.active {
+    color: var(--accent);
+    background: var(--accent-dim);
+    font-weight: 500;
+}
+
+.sidebar-link-external { font-size: 0.72rem; color: var(--muted); }
+.sidebar-link-external:hover { color: var(--text2); }
+.sidebar-discord:hover { color: #7289da !important; }
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 40;
+}
+
+
+/* ── MAIN CONTENT ── */
+.docs-main {
+    flex: 1;
+    display: flex;
+    margin-left: var(--sidebar-w);
+    min-width: 0;
+}
+
+.docs-content {
+    flex: 1;
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 48px 48px 80px;
+    min-width: 0;
+}
+
+
+/* ── TABLE OF CONTENTS ── */
+.docs-toc {
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+    width: var(--toc-w);
+    max-height: calc(100vh - var(--header-h) - 64px);
+    overflow-y: auto;
+    padding: 32px 20px 32px 0;
+    flex-shrink: 0;
+    align-self: flex-start;
+}
+
+.toc-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+
+.docs-toc nav#TableOfContents ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.docs-toc nav#TableOfContents > ul > li {
+    margin-bottom: 2px;
+}
+
+.docs-toc nav#TableOfContents ul ul {
+    padding-left: 14px;
+}
+
+.docs-toc nav#TableOfContents a {
+    display: block;
+    padding: 3px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-decoration: none;
+    line-height: 1.5;
+    transition: color 0.12s;
+}
+
+.docs-toc nav#TableOfContents a:hover {
+    color: var(--accent);
+}
+
+
+/* ================================================================
+   TYPOGRAPHY — optimized for reading documentation
+   ================================================================ */
+.docs-content h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    font-size: 2rem;
+    letter-spacing: -0.03em;
+    color: var(--accent);
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.page-description {
+    font-family: 'Fragment Mono', monospace;
+    font-size: 0.92rem;
+    color: var(--text2);
+    font-style: italic;
+    margin-bottom: 36px;
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+.docs-content h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-top: 56px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.3;
+}
+
+.docs-content h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-top: 40px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.docs-content h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text2);
+    margin-top: 32px;
+    margin-bottom: 10px;
+}
+
+.docs-content p {
+    margin-bottom: 16px;
+    color: var(--text);
+}
+
+.docs-content strong {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.docs-content em {
+    font-style: italic;
+    color: var(--text2);
+}
+
+.docs-content a {
+    color: var(--accent2);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(87, 212, 255, 0.2);
+    transition: border-color 0.12s, color 0.12s;
+}
+
+.docs-content a:hover {
+    border-color: var(--accent2);
+}
+
+.docs-content ul, .docs-content ol {
+    margin-bottom: 16px;
+    padding-left: 24px;
+}
+
+.docs-content li {
+    margin-bottom: 6px;
+    color: var(--text);
+}
+
+.docs-content li::marker {
+    color: var(--accent);
+}
+
+.docs-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+}
+
+
+/* ── INLINE CODE ── */
+.docs-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    background: var(--surface);
+    color: var(--accent);
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+
+
+/* ── CODE BLOCKS ── */
+.docs-content pre {
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface) !important;
+    overflow-x: auto;
+}
+
+.docs-content pre code {
+    display: block;
+    padding: 20px 22px;
+    background: transparent !important;
+    border: none;
+    color: var(--text);
+    font-size: 0.82rem;
+    line-height: 1.7;
+    border-radius: 0;
+}
+
+.docs-content .highlight pre {
+    margin: 0;
+}
+
+.docs-content .highlight {
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--surface);
+}
+
+
+/* ── TABLES ── */
+.docs-content table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.docs-content th {
+    background: var(--surface2);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    text-align: left;
+    padding: 10px 16px;
+    color: var(--text);
+    border-bottom: 1px solid var(--border2);
+}
+
+.docs-content td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+}
+
+.docs-content tr:last-child td {
+    border-bottom: none;
+}
+
+.docs-content tr:hover td {
+    background: var(--accent-glow);
+}
+
+.docs-content td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--text);
+}
+
+
+/* ── BLOCKQUOTES ── */
+.docs-content blockquote {
+    margin: 20px 0;
+    padding: 16px 20px;
+    background: var(--faint);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    color: var(--text2);
+    font-size: 0.92rem;
+}
+
+.docs-content blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+.docs-content blockquote code {
+    background: var(--surface2);
+}
+
+
+/* ── INFO / TIP BOXES (use blockquotes with > **Note:** prefix) ── */
+.docs-content blockquote strong {
+    color: var(--accent);
+}
+
+
+/* ── FILE TREE BLOCKS ── */
+.docs-content pre code .tree-line {
+    color: var(--muted);
+}
+
+
+/* ================================================================
+   PAGE NAVIGATION (prev/next)
+   ================================================================ */
+.page-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 64px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+}
+
+.page-nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none !important;
+    transition: all 0.15s;
+    min-width: 0;
+}
+
+.page-nav-link:hover {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+}
+
+.page-nav-next { margin-left: auto; text-align: right; }
+
+.page-nav-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.page-nav-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 500;
+}
+
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width: 1200px) {
+    .docs-toc { display: none; }
+}
+
+@media (max-width: 860px) {
+    .header-nav { display: none; }
+    .mobile-menu-toggle { display: block; }
+
+    .docs-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        z-index: 200;
+    }
+
+    .docs-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay.open {
+        display: block;
+    }
+
+    .docs-main {
+        margin-left: 0;
+    }
+
+    .docs-content {
+        padding: 32px 20px 60px;
+    }
+
+    .docs-content h1 {
+        font-size: 1.6rem;
+    }
+
+    .docs-content h2 {
+        font-size: 1.15rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .docs-content pre code {
+        font-size: 0.75rem;
+    }
+
+    .page-nav {
+        flex-direction: column;
+    }
+
+    .page-nav-next { margin-left: 0; text-align: left; }
+}
+
+
+/* ================================================================
+   MOBILE SIDEBAR TOGGLE (JS inline at bottom)
+   ================================================================ */

@@ -1,0 +1,15 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+{{ with .Params.description }}<p class="page-description">{{ . }}</p>{{ end }}
+{{ .Content }}
+
+{{ $first := index .Site.Menus.docs 1 }}
+{{ with $first }}
+<div class="page-nav" style="justify-content: flex-end;">
+    <a href="{{ .URL }}" class="page-nav-link page-nav-next">
+        <span class="page-nav-label">Get started</span>
+        <span class="page-nav-title">{{ .Name }} →</span>
+    </a>
+</div>
+{{ end }}
+{{ end }}
