@@ -59,7 +59,7 @@
 </span></span></span><span class=line><span class=cl><span class=w>
 </span></span></span><span class=line><span class=cl><span class=kn>import</span><span class=w> </span><span class=p>(</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>    </span><span class=s>&#34;path/filepath&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=s>&#34;github.com/vibefiledev/vibe/detect&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=s>&#34;github.com/vibefile-dev/vibe/detect&#34;</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=p>)</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>
 </span></span></span><span class=line><span class=cl><span class=kd>func</span><span class=w> </span><span class=nf>init</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=nx>detect</span><span class=p>.</span><span class=nf>Register</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>Detector</span><span class=p>{})</span><span class=w> </span><span class=p>}</span><span class=w>
@@ -90,7 +90,7 @@
 </span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
 </span></span></span></code></pre></div><p>Register it in <code>init()</code> with <code>detect.RegisterTemplate(&amp;TemplateProvider{})</code>. The template provider receives the <code>ProjectInfo</code> populated by the detector and returns a <code>Template</code> with variables and targets.</p><h3 id=example-python-template-provider>Example: Python template provider</h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span><span class=w> </span><span class=nx>python</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=kn>import</span><span class=w> </span><span class=s>&#34;github.com/vibefiledev/vibe/detect&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=kn>import</span><span class=w> </span><span class=s>&#34;github.com/vibefile-dev/vibe/detect&#34;</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>
 </span></span></span><span class=line><span class=cl><span class=kd>func</span><span class=w> </span><span class=nf>init</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>detect</span><span class=p>.</span><span class=nf>Register</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>Detector</span><span class=p>{})</span><span class=w>
@@ -133,7 +133,7 @@
 </span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
 </span></span></span></code></pre></div><h3 id=wiring-it-in>Wiring it in</h3><p>For the detector to run, it must be imported in <code>cmd/init.go</code> with a blank import:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>import</span><span class=w> </span><span class=p>(</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>_</span><span class=w> </span><span class=s>&#34;github.com/vibefiledev/vibe/detect/python&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>_</span><span class=w> </span><span class=s>&#34;github.com/vibefile-dev/vibe/detect/python&#34;</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=p>)</span><span class=w>
 </span></span></span></code></pre></div><p>This triggers the <code>init()</code> function which registers both the detector and template provider.</p><hr><h2 id=writing-an-addon-detector>Writing an addon detector</h2><p>Addon detectors find tools, platforms, and infrastructure and contribute additional targets to the Vibefile. They implement the <code>Addon</code> interface:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span><span class=w> </span><span class=nx>detect</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>
@@ -149,7 +149,7 @@
 </span></span></span><span class=line><span class=cl><span class=w>
 </span></span></span><span class=line><span class=cl><span class=kn>import</span><span class=w> </span><span class=p>(</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>    </span><span class=s>&#34;path/filepath&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=s>&#34;github.com/vibefiledev/vibe/detect&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=s>&#34;github.com/vibefile-dev/vibe/detect&#34;</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=p>)</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>
 </span></span></span><span class=line><span class=cl><span class=kd>func</span><span class=w> </span><span class=nf>init</span><span class=p>()</span><span class=w> </span><span class=p>{</span><span class=w> </span><span class=nx>detect</span><span class=p>.</span><span class=nf>RegisterAddon</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>Addon</span><span class=p>{})</span><span class=w> </span><span class=p>}</span><span class=w>
@@ -187,7 +187,7 @@
 </span></span></span><span class=line><span class=cl><span class=w>    </span><span class=p>}</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=p>}</span><span class=w>
 </span></span></span></code></pre></div><p>The same registration pattern applies — blank import in <code>cmd/init.go</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>import</span><span class=w> </span><span class=p>(</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>_</span><span class=w> </span><span class=s>&#34;github.com/vibefiledev/vibe/detect/terraform&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nx>_</span><span class=w> </span><span class=s>&#34;github.com/vibefile-dev/vibe/detect/terraform&#34;</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=p>)</span><span class=w>
 </span></span></span></code></pre></div><h3 id=how-addons-merge>How addons merge</h3><p>When both a language template and addons contribute targets, they&rsquo;re merged into a single Vibefile. If a target name conflicts (e.g. both the language template and an addon generate a <code>deploy</code> target), the first writer wins and the conflict is logged in debug output.</p><hr><h2 id=yaml-template-overrides>YAML template overrides</h2><p>You don&rsquo;t need to write Go code to customize the generated Vibefile. Templates can be overridden with YAML files:</p><ul><li><code>.vibe/templates/&lt;lang>.yaml</code> — project-local override</li><li><code>~/.vibe/templates/&lt;lang>.yaml</code> — user-global override</li></ul><p>These take priority over built-in templates.</p><h3 id=template-format>Template format</h3><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>variables</span><span class=p>:</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>  </span>- <span class=nt>key</span><span class=p>:</span><span class=w> </span><span class=l>model</span><span class=w>

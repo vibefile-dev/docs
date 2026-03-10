@@ -126,7 +126,7 @@ package python
 
 import (
     "path/filepath"
-    "github.com/vibefiledev/vibe/detect"
+    "github.com/vibefile-dev/vibe/detect"
 )
 
 func init() { detect.Register(&Detector{}) }
@@ -178,7 +178,7 @@ Register it in `init()` with `detect.RegisterTemplate(&TemplateProvider{})`. The
 ```go
 package python
 
-import "github.com/vibefiledev/vibe/detect"
+import "github.com/vibefile-dev/vibe/detect"
 
 func init() {
     detect.Register(&Detector{})
@@ -228,7 +228,7 @@ For the detector to run, it must be imported in `cmd/init.go` with a blank impor
 
 ```go
 import (
-    _ "github.com/vibefiledev/vibe/detect/python"
+    _ "github.com/vibefile-dev/vibe/detect/python"
 )
 ```
 
@@ -267,7 +267,7 @@ package terraform
 
 import (
     "path/filepath"
-    "github.com/vibefiledev/vibe/detect"
+    "github.com/vibefile-dev/vibe/detect"
 )
 
 func init() { detect.RegisterAddon(&Addon{}) }
@@ -310,7 +310,7 @@ The same registration pattern applies — blank import in `cmd/init.go`:
 
 ```go
 import (
-    _ "github.com/vibefiledev/vibe/detect/terraform"
+    _ "github.com/vibefile-dev/vibe/detect/terraform"
 )
 ```
 

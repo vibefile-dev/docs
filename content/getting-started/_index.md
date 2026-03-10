@@ -9,7 +9,7 @@ weight: 2
 Vibefile is a Go-based CLI. Install it with:
 
 ```sh
-go install github.com/vibefiledev/vibe@latest
+go install github.com/vibefile-dev/vibe@latest
 ```
 
 You need **Go 1.21 or later**. If you've got that, you're in business.

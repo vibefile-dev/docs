@@ -59,7 +59,7 @@ The Vibefile is your source code. The generated shell script is the binary. Just
 
 ```sh
 # Install the CLI
-go install github.com/vibefiledev/vibe@latest
+go install github.com/vibefile-dev/vibe@latest
 
 # Initialize a Vibefile for your project
 vibe init
