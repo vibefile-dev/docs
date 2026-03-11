@@ -12,9 +12,11 @@ Each target runs in one of three modes, determined by its directives:
 |------|---------|-----------|--------|
 | **Codegen** | plain recipe, no `@mcp` | LLM generates a shell script; CLI executes it | **Implemented** |
 | **Agent** | `@mcp` present | LLM executes via tool calls to declared MCP servers | Coming soon |
-| **Skill** | `@skill` present | LLM instructions come from `SKILL.md`; mode is then codegen or agent depending on other directives | Coming soon |
+| **Skill** | `@skill` present | LLM instructions come from `SKILL.md`; delivered via Anthropic tool-calling API | **Implemented** |
 
-**Codegen mode** is the core execution path today. The CLI collects repo context, calls the LLM to generate a shell script, and executes it. The generated script is cached for subsequent runs.
+**Codegen mode** is the core execution path. The CLI collects repo context, calls the LLM to generate a shell script, and executes it. The generated script is cached for subsequent runs.
+
+**Skill mode** extends codegen: the CLI resolves a `SKILL.md` file and provides it to the LLM as a callable tool. The model invokes the skill to load its full instructions, then generates a shell script informed by both the recipe and the skill. Cached the same way as regular codegen targets. See [Directives — @skill](/directives/#skill) for details.
 
 ---
 

@@ -8,6 +8,7 @@ weight: 4
 
 ```sh
 vibe init                         # detect project type and generate a Vibefile
+vibe init --empty                 # create a minimal skeleton Vibefile
 vibe init --language <lang>       # use a specific language template
 vibe init --force                 # overwrite an existing Vibefile
 vibe run <target>                 # run a target and its dependencies
@@ -28,6 +29,7 @@ All commands are implemented and functional.
 Bootstraps a new Vibefile by detecting project language, framework, and infrastructure from manifest files and generating targets for the detected stack. No LLM call required — templates are preconfigured.
 
 **Flags:**
+- `--empty` — create a minimal skeleton Vibefile without auto-detected targets (for manual setup)
 - `--language <lang>` — skip auto-detection, use specific language template (e.g. `go`, `nextjs`)
 - `--force` — overwrite existing Vibefile
 
@@ -99,6 +101,8 @@ The main command. Runs a target and all its dependencies in topological order.
 
 1. Parse Vibefile, resolve dependencies (topological sort, cycle detection)
 2. For each target in dependency order:
+   - Evaluate `@require` preconditions (fail fast if unmet)
+   - Resolve `@skill` if present (load `SKILL.md`, show description)
    - Check compiled cache — if valid, use cached script
    - If no cache (or invalidated), collect context and call LLM
    - Execute script (currently on host; sandbox coming soon)
@@ -132,7 +136,7 @@ Validates the Vibefile without running anything. Checks:
 - All dependency references resolve to defined targets
 - No dependency cycles exist
 - Model is specified
-- Warns about targets using unimplemented modes (`@mcp`, `@skill`)
+- Warns about targets using unimplemented modes (`@mcp`)
 
 ```sh
 $ vibe check
@@ -153,7 +157,7 @@ $ vibe status
   lint    ✗ stale (recipe changed)
 ```
 
-States include: compiled (valid cache), stale (inputs changed), not compiled, hand-edited (script modified outside of LLM), and agent/skill (not applicable for caching).
+States include: compiled (valid cache), stale (inputs changed), not compiled, hand-edited (script modified outside of LLM), and agent (not applicable for caching). Skill targets are compiled and tracked like codegen targets.
 
 ---
 

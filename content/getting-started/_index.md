@@ -46,6 +46,14 @@ vibe init
 
 This auto-detects your project type from manifest files (`go.mod`, `package.json`, `Cargo.toml`, etc.) and generates a Vibefile with sensible defaults. No LLM call — it's template-based.
 
+If you'd rather start from scratch, use `--empty` to get a minimal skeleton:
+
+```sh
+vibe init --empty
+```
+
+This creates a Vibefile with model and name set, and commented-out examples — ready for you to fill in.
+
 Override detection with `--language` if you want a specific stack, or `--force` to clobber an existing Vibefile.
 
 ## Your first Vibefile

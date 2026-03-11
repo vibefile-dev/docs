@@ -64,6 +64,8 @@ context_files:
   Vibefile: sha256:7g8h9i...
 variables:
   env: production
+skill_hash: sha256:j0k1l2...    # present only when @skill is used
+script_hash: sha256:m3n4o5...
 generated_at: 2025-03-08T14:22:00Z
 ```
 
@@ -77,20 +79,25 @@ On each run, the CLI recomputes the checksum and compares it to the `.lock` file
 | Variable value changed | Yes |
 | Relevant context file changed (e.g. `package.json`) | Yes |
 | Model version changed | Yes |
-| Skill updated | Yes |
+| Skill `SKILL.md` content changed | Yes |
 | Unrelated source files changed | No |
 | Running on a different machine (same inputs) | No |
 
 ---
 
-## Codegen targets only
+## Codegen and skill targets only
 
-Compilation applies to **codegen mode** only. Agent targets (`@mcp`) are inherently dynamic — they interact with live services, inspect state, and adapt at runtime. Caching their output would be meaningless and potentially dangerous.
+Compilation applies to **codegen** and **skill** mode targets. Both generate shell scripts that are cached for subsequent runs. Agent targets (`@mcp`) are inherently dynamic — they interact with live services, inspect state, and adapt at runtime. Caching their output would be meaningless and potentially dangerous.
 
 ```makefile
 build:
     "compile and bundle for production"
     # compiled — same commands every time
+
+test:
+    @skill go-test
+    "run the Go tests for this project"
+    # compiled — skill content is hashed, recompiles when SKILL.md changes
 
 deploy: build
     "deploy to production on fly.io and verify health"
