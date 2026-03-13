@@ -1,6 +1,6 @@
 ---
 title: "CLI Reference"
-description: "Complete reference for all vibe commands — init, run, list, check, and status."
+description: "Complete reference for all vibe commands — init, run, list, check, status, and eject."
 weight: 4
 ---
 
@@ -18,6 +18,9 @@ vibe run <target> --recompile-all # recompile this target and all deps
 vibe list                         # list all targets with their descriptions
 vibe check                        # validate the Vibefile without running anything
 vibe status                       # show compiled/uncompiled state of all targets
+vibe eject                        # generate a standalone Makefile from compiled scripts
+vibe eject -o Makefile            # write ejected Makefile to a file
+vibe eject --compile              # compile missing targets first, then eject
 ```
 
 All commands are implemented and functional.
@@ -158,6 +161,79 @@ $ vibe status
 ```
 
 States include: compiled (valid cache), stale (inputs changed), not compiled, hand-edited (script modified outside of LLM), and agent (not applicable for caching). Skill targets are compiled and tracked like codegen targets.
+
+---
+
+## `vibe eject`
+
+Generates a standard, self-contained Makefile from the Vibefile and its compiled shell scripts. The resulting Makefile is 100% compatible with GNU Make and requires no vibe CLI, no LLM, and no API key to run.
+
+This is the escape hatch: if a team decides to stop using Vibefile, or needs a plain Makefile for environments where the vibe CLI isn't available, `vibe eject` produces one that reproduces the exact same behaviour as the compiled targets.
+
+**Flags:**
+- `-o <file>` / `--output <file>` — write the Makefile to a file instead of stdout
+- `--compile` — compile any missing or stale codegen targets before ejecting (requires an API key)
+
+```sh
+vibe eject                       # print generated Makefile to stdout
+vibe eject -o Makefile           # write to a file
+vibe eject --compile -o Makefile # compile everything first, then eject
+```
+
+When `--compile` is passed, each codegen target that has no compiled script (or a stale one) is compiled via the LLM before generating the Makefile. Targets that already have a valid cached script are skipped. This is a one-shot way to go from a fresh Vibefile to a complete Makefile without running each target individually.
+
+**What gets ejected:**
+
+- All codegen targets with compiled scripts in `.vibe/compiled/` are inlined as Makefile recipes
+- Dependencies are preserved as Makefile prerequisites
+- Vibefile variables are mapped to uppercased Makefile variables (e.g. `env` becomes `ENV`)
+- Shebang lines and `set -euo pipefail` are stripped — the generated Makefile sets `SHELL := /bin/bash` and `.SHELLFLAGS := -euo pipefail -c` globally
+- A `help` target is generated listing all available targets
+- All targets are marked `.PHONY`
+
+**What gets skipped:**
+
+- **Agent targets** (`@mcp`) — these require live MCP server interaction and cannot be reduced to a shell script. A comment is left in the Makefile explaining the skip.
+- **Targets without compiled scripts** — a warning is printed to stderr suggesting you run `vibe eject --compile` or `vibe run <target>` first.
+
+**Example:**
+
+```sh
+$ vibe eject -o Makefile
+Makefile written to Makefile
+```
+
+The generated Makefile:
+
+```makefile
+# Makefile — ejected from Vibefile by `vibe eject`
+# This is a standalone Makefile. It does not require the vibe CLI.
+SHELL := /bin/bash
+.SHELLFLAGS := -euo pipefail -c
+.ONESHELL:
+
+ENV := production
+PROJECT := my-saas-app
+
+.DEFAULT_GOAL := build
+.PHONY: build test deploy
+
+# compile and bundle the project for production
+build:
+	echo "Building..."
+	go build -o bin/app ./cmd/app
+
+# run all tests with verbose output
+test:
+	go test -v -race ./...
+
+# deploy: skipped (agent mode — requires @mcp, cannot be ejected)
+
+help:
+	@echo "Available targets:"
+	@echo "  build                compile and bundle the project for production"
+	@echo "  test                 run all tests with verbose output"
+```
 
 ---
 
