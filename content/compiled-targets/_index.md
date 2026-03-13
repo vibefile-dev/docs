@@ -121,3 +121,15 @@ vibe run build --recompile-all   # force LLM call for this target and all deps
 Because compiled scripts are committed, they're auditable. Code review shows both intent (recipe) and implementation (shell). Teams catch problems before production.
 
 Hand-editing compiled scripts is supported: the CLI detects manual modification (checksum mismatch without recipe change) and warns but still executes. Use `--recompile` to regenerate from the recipe.
+
+---
+
+## Ejecting to a Makefile
+
+If you want to leave Vibefile behind entirely, or need a plain Makefile for environments without the vibe CLI, use `vibe eject`:
+
+```sh
+vibe eject -o Makefile
+```
+
+This generates a standard GNU Make-compatible Makefile by inlining all compiled scripts as recipes. The result requires no vibe CLI, no LLM, and no API key. See the [CLI Reference](/cli/#vibe-eject) for full details.
